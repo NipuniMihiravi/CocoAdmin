@@ -26,6 +26,10 @@ const DateSelected = () => {
       const response = await axios.get(
         `${API_URL}/api/reservation/checkAvailability?reservationDate=${formattedDate}`
       );
+
+      // Log response to check its structure
+      console.log("Reservations Response:", response.data);
+
       setReservations(response.data);
       setErrorMessage("");
     } catch (error) {
@@ -47,6 +51,9 @@ const DateSelected = () => {
       try {
         const response = await axios.get(`${API_URL}/api/reservation`); // Adjust your endpoint as needed
         const allReservations = response.data;
+
+        // Log the data to check the structure
+        console.log("All Reservations:", allReservations);
 
         // Extract dates for which reservations exist
         const dates = new Set(allReservations.map(reservation => {
