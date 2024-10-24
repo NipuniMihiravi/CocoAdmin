@@ -1,0 +1,305 @@
+/* Container for the date range picker */
+
+.date-calender-container {
+    max-width: 1200px; /* Set a maximum width for the container */
+    margin: 0 auto; /* Center the container horizontally */
+    padding: 20px; /* Add padding inside the container */
+    background-color: #f8f9fa; /* Light background color for contrast */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+.date-range {
+  display: flex;
+  flex-direction: column; /* Stack items vertically on smaller screens */
+  align-items: flex-start; /* Align items to the start */
+  gap: 40px; /* Reduced gap for better mobile display */
+  margin-bottom: 20px;
+  margin-left:100px;
+}
+
+/* Media query for larger screens */
+@media (min-width: 600px) {
+  .date-range {
+    flex-direction: row; /* Align items horizontally on larger screens */
+
+  }
+}
+
+/* DatePicker input styles */
+.react-datepicker__input-container input {
+  padding: 8px;
+  border: 10px solid #006400;
+  width: 100%; /* Full width for mobile */
+  max-width: 100px; /* Limit width on larger screens */
+  font-size: 14px;
+  transition: border 0.2s ease-in-out;
+  margin-left:50px;
+}
+
+.react-datepicker__input-container input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Custom styling for the DatePicker calendar */
+.react-datepicker {
+  border: 2px solid #006400;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin-left:50px;
+}
+
+.react-datepicker__header {
+  background-color: #008B8B;
+  color: white;
+  margin-left:50px;
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--in-range,
+.react-datepicker__day--range-start,
+.react-datepicker__day--range-end {
+  background-color: #008B8B;
+  color: white;
+  margin-left:50px;
+}
+
+/* Search input styles */
+input[type="text"] {
+  padding: 8px;
+  border: 3px solid #006400;
+  border-radius: 5px;
+  width: 100%; /* Full width for mobile */
+  max-width: 250px; /* Limit width on larger screens */
+  height: 20px;
+  font-size: 15px;
+  font-weight: bold;
+  margin-right: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-left:50px;
+}
+
+input[type="text"]:focus {
+  border-color: #008B8B;
+  outline: none;
+}
+
+/* Button styling */
+.generate-pdf-button {
+  background-color: #317873; /* Button background color */
+  color: white; /* Button text color */
+  border: 3px solid #71BC78; /* Border color */
+  padding: 10px 20px; /* Padding */
+  font-size: 13px; /* Font size */
+  cursor: pointer; /* Pointer cursor on hover */
+  margin: 10px 0; /* Margin for better alignment */
+  margin-left:40px;
+  display: inline-block; /* Change to inline-block for alignment */
+  max-width: fit-content; /* Adjusts to content size */
+}
+
+.generate-pdf-button:hover {
+  background-color: #006A4E; /* Darker background on hover */
+  border-color: #8FBC8B; /* Darker border on hover */
+}
+
+/* Layout adjustments for better alignment */
+.date-range, input[type="text"], button {
+  margin: 10px 0;
+}
+
+
+/*Table CSSS */
+#reservation-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+
+}
+
+/* Table header styling */
+#reservation-table thead {
+  background-color: #71BC78;
+  color: black;
+}
+
+#reservation-table th {
+  padding: 12px;
+  text-align: left;
+  font-weight: bold;
+  border-bottom: 2px solid #ddd;
+  background-color: #71BC78;
+  color: black;
+}
+
+/* Table row styling */
+#reservation-table tr {
+  border-bottom: 1px solid #ddd;
+}
+
+#reservation-table td {
+  padding: 12px;
+  text-align: left;
+}
+
+/* Alternating row colors */
+#reservation-table tbody tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+/* Hover effect on rows */
+#reservation-table tbody tr:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+/* Button styling in the actions column */
+#reservation-table button {
+  padding: 8px 12px;
+  margin-right: 5px;
+  background-color: #49796B;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+#reservation-table button:hover {
+  background-color: #29AB87;
+  color: #fff;
+}
+
+#reservation-table button:last-child {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+#reservation-table button:last-child:hover {
+  background-color: #c82333;
+  color: #fff;
+}
+
+/* Responsive design for small screens */
+@media (max-width: 768px) {
+  #reservation-table th, #reservation-table td {
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  #reservation-table button {
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+}
+
+.modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column; /* Stack children vertically */
+    align-items: center;    /* Center items horizontally */
+    width: 800px; /* Adjust width based on your design */
+    padding: 20px;
+    border-radius: 8px;
+    background-color: #8FBC8B; /* Background color of modal */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Shadow effect for depth */
+    margin: 0 auto; /* Center the modal */
+    overflow-y: auto; /* Allow scrolling if content overflows */
+    max-height: 80vh; /* Set a maximum height for the modal */
+    margin-left:50px;
+}
+
+h2 {
+    margin-bottom: 20px; /* Space below the heading */
+    margin-left:50px;
+    color: #333; /* Darker text for better readability */
+    font-size: 24px; /* Font size for the heading */
+    margin-left:50px;
+}
+
+.form-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 15px; /* Space between form rows */
+    align-items: center; /* Align items vertically */
+    width: 400px;
+}
+
+label {
+    flex: 1; /* Allow labels to take equal space */
+    margin-right: 10px; /* Space between label and input */
+    color: #555; /* Slightly lighter text */
+    font-weight: bold; /* Make labels stand out */
+}
+
+input[type="text"],
+input[type="email"],
+input[type="number"],
+textarea,
+select {
+    flex: 2; /* Inputs take more space */
+    padding: 8px; /* Padding for inputs */
+    border: 1px solid #ccc; /* Border color */
+    border-radius: 4px; /* Rounded corners */
+    font-size: 14px; /* Font size */
+    transition: border-color 0.3s; /* Transition effect for focus */
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="number"]:focus,
+textarea:focus,
+select:focus {
+    border-color: #007BFF; /* Change border color on focus */
+    outline: none; /* Remove outline */
+}
+
+textarea {
+    resize: vertical; /* Allow vertical resizing only */
+    height: 60px; /* Set default height for textareas */
+}
+
+
+.form-row:last-child {
+    margin-bottom: 0; /* Remove margin for the last row */
+}
+
+.close-button {
+    position: absolute; /* Position it in the top right corner */
+    top: 10px;
+    right: 10px;
+    background: transparent; /* No background */
+    border: none; /* No border */
+    font-size: 24px; /* Size of the icon */
+    color: #fff; /* Color of the icon (make it visible on the background) */
+    cursor: pointer; /* Pointer cursor */
+}
+
+.close-button:hover {
+    color: #ff4d4d; /* Change color on hover */
+}
+
+
+@media (max-width: 600px) {
+    .modal-content {
+        padding: 15px; /* Reduce padding for smaller screens */
+    }
+
+    .form-row {
+        flex-direction: column; /* Stack elements vertically */
+        width: 100%; /* Full width */
+    }
+
+    label {
+        margin-bottom: 5px; /* Add space below labels */
+    }
+}
+
+
+
+
+
+
+

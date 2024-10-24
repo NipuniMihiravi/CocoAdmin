@@ -1,0 +1,520 @@
+/* Custom styles for calendar tiles based on reservation status */
+/* Calendar.css */
+
+
+.reservation-red {
+    background-color: #8B0000 !important; /* Red for fully booked days */
+}
+
+.reservation-yellow {
+    background-color: #008B8B !important; /* Yellow for day booked */
+}
+
+.reservation-pink {
+    background-color: pink !important; /* Pink for night booked */
+}
+
+/* Additional styles if necessary */
+
+/* Calender */
+
+/* Overall Page Styling */
+
+
+/* Calendar and Form Container */
+.full-calender-container {
+    flex: 1;
+    max-width: 70%;
+    width: 100%;
+    background-color: #8FBC8B;
+    padding: 20px;
+    border-radius: 10px;
+    margin-top: 130px;
+    margin-left:100px;
+    transition: all 0.3s ease;
+}
+
+.calendar-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    background-color: #679267;
+    margin-top: 20px;
+    border-radius: 10px;
+    margin-left:50px;
+    transition: all 0.3s ease;
+}
+
+.h2 {
+    margin-bottom: 20px;
+    color: white;
+    margin-left:100px;
+    font-size: 26px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-family: "Poppins", sans-serif;
+}
+
+.calendar-view {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    height: 250px;
+    background-color: #679267;
+    transition: all 0.3s ease;
+}
+
+.calendar-view h3 {
+    margin-bottom: 20px;
+    color: white;
+    font-size: 22px;
+    font-weight: bold;
+    font-family: "Poppins", sans-serif;
+}
+
+.cell {
+    padding: 5px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 200px;
+    text-align: center;
+    font-size: 15px;
+    margin-bottom: 20px;
+    transition: background-color 0.3s ease;
+    display: flex; /* Make the cell a flex container */
+    flex-direction: column; /* Stack items vertically */
+}
+
+.cell button {
+    background-color: #679267;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 10px;
+    margin-left: auto; /* Align button to the right */
+}
+
+.cell button:hover {
+    background-color: #8FBC8B;
+}
+
+/* Media queries for responsiveness */
+
+/* For tablets and larger mobile devices */
+@media (max-width: 1024px) {
+    .full-calender-container {
+        max-width: 90%;
+        margin-top: 100px;
+    }
+
+    .calendar-container {
+        margin-right: 100px;
+        padding: 15px;
+    }
+
+    .h2 {
+        font-size: 24px;
+    }
+
+    .calendar-view {
+        padding: 15px;
+        height: auto;
+    }
+
+    .cell {
+        max-width: 180px;
+    }
+}
+
+/* For mobile devices */
+@media (max-width: 768px) {
+    .full-calender-container {
+        max-width: 100%;
+        padding: 15px;
+        margin-top: 80px;
+    }
+
+    .calendar-container {
+        margin-right: 0;
+        padding: 10px;
+    }
+
+    .h2 {
+        font-size: 20px;
+    }
+
+    .calendar-view {
+        padding: 10px;
+        height: auto;
+    }
+
+    .calendar-view h3 {
+        font-size: 20px;
+    }
+
+    .cell {
+        max-width: 160px;
+        font-size: 14px;
+    }
+
+    .cell button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
+
+/* For small mobile devices */
+@media (max-width: 480px) {
+    .full-calender-container {
+        max-width: 100%;
+        padding: 10px;
+        margin-top: 60px;
+    }
+
+    .calendar-container {
+        margin-right: 0;
+        padding: 5px;
+        flex-direction: column;
+    }
+
+    .h2 {
+        font-size: 18px;
+        margin-bottom: 30px;
+    }
+
+    .calendar-view {
+        padding: 5px;
+        height: auto;
+    }
+
+    .calendar-view h3 {
+        font-size: 18px;
+    }
+
+    .cell {
+        max-width: 150px;
+        font-size: 13px;
+    }
+
+    .cell button {
+        padding: 7px 14px;
+        font-size: 13px;
+    }
+}
+/* ------------------------------------------------------------------------------------*/
+
+/* General Styles */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* Use flex-start for left alignment */
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 400px;
+    font-size: 13px;
+    font-family: "Poppins", sans-serif;
+    margin-left:50px;
+}
+
+form input{
+    width: 100%;
+    max-width:550px;
+    padding: 10px;
+    margin: 10px 0;
+    border: 2px solid #00693E;
+    border-radius: 5px;
+    font-size: 15px;
+    font-family: "Poppins", sans-serif;
+}
+form select{
+    width: 100%;
+    max-width:350px;
+    padding: 10px;
+    margin: 10px 0;
+    border: 2px solid #00693E;
+    border-radius: 5px;
+    font-size: 15px;
+    font-family: "Poppins", sans-serif;
+}
+
+form textarea {
+    resize: none;
+    height: 200px;
+    width: 100%;
+        max-width:550px;
+        padding: 10px;
+        margin: 10px 0;
+        border: 2px solid #00693E;
+        border-radius: 5px;
+        font-size: 15px;
+        font-family: "Poppins", sans-serif;
+}
+
+form button {
+    background-color: #317873;
+    color: white;
+    border: 3px solid #71BC78;
+    padding: 10px 20px;
+    font-size: 15px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 200px;
+    display: block;
+    margin: 0 auto; /* Center the button */
+}
+
+/* Button Hover Effects */
+form button[type="submit"]:hover,
+form button[type="button"]:hover {
+    background-color: #006A4E; /* Darker background on hover */
+    border-color: #8FBC8B; /* Darker border on hover */
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    form {
+        padding: 15px; /* Reduce padding */
+        max-width: 90%; /* Allow form to take more width on smaller screens */
+    }
+
+    form input, form select, form textarea {
+        max-width: 100%; /* Ensure elements are full width */
+        font-size: 14px; /* Slightly increase font size for readability */
+    }
+
+    form button {
+        width: 100%; /* Full width button */
+        padding: 12px; /* Increase padding for better touch targets */
+    }
+}
+
+@media (max-width: 480px) {
+    form {
+        padding: 10px; /* Further reduce padding for very small screens */
+    }
+
+    form input, form select, form textarea {
+        font-size: 13px; /* Adjust font size for mobile */
+    }
+
+    form button {
+        font-size: 14px; /* Adjust button font size */
+    }
+}
+
+
+@media screen and (max-width: 768px) {
+    .calendar-view {
+        padding: 10px;
+    }
+
+    form {
+        padding: 10px;
+        max-width: 100%;
+    }
+}
+
+select:disabled {
+    color: black; /* Change font color to black when disabled */
+    background-color: #A9BA9D; /* Optional: change background color */
+    cursor: not-allowed; /* Optional: change cursor to indicate it's disabled */
+    font-weight: bold;
+}
+
+.terms-conditions {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+    background-color: #f9f9f9; /* Light background for contrast */
+    border: 1px solid #ddd; /* Subtle border */
+    border-radius: 8px; /* Rounded corners */
+    text-align: left; /* Left-align text */
+    width: 100%;
+    max-width: 500px;
+}
+
+.terms-conditions h2 {
+    color: #317873; /* Main heading color */
+    font-size:18px;
+}
+
+.terms-conditions h3 {
+    color: #679267; /* Subheading color */
+    font-size:16px;
+}
+
+.terms-conditions p {
+    margin: 20px 0; /* Space between paragraphs */
+    color: black; /* Subheading color */
+    font-size:13px;
+    text-align: left; /* Left-align text */
+    border-bottom: 1px solid #ddd; /* Add a bottom border */
+    padding-bottom: 10px; /* Space between text and border */
+}
+.terms-conditions ul {
+    margin-left: 20px; /* Indent for list */
+    font-size:13px;
+}
+@media screen and (max-width: 768px) {
+    .calendar-page-container {
+        flex-direction: column; /* Stack the sections vertically */
+        align-items: stretch; /* Ensure children stretch to full width */
+        padding: 10px; /* Adjust padding for smaller screens */
+    }
+
+    .image-section, .full-calender-container {
+        max-width: 100%; /* Allow full width on small screens */
+        margin: 10px 0; /* Ensure vertical spacing */
+        flex: 1; /* Allow to fill available space */
+    }
+
+    /* Adjust padding and margin for calendar view on mobile */
+    .calendar-view {
+        padding: 10px; /* Less padding on smaller screens */
+        height: auto; /* Allow height to adjust as needed */
+        max-width: 100%;
+        flex: 1;
+    }
+
+
+}
+.booking-status-container {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap; /* Allow items to wrap on smaller screens */
+  margin-left:50px;
+}
+
+.status-box {
+  width: 120px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: center;
+  border-radius: 8px;
+  margin-left:50px;
+}
+
+/* Status box colors */
+.full-booked {
+  background-color: #8B0000;
+  margin-left:50px;
+}
+
+.day-booked {
+  background-color: #008B8B;
+  color: black; /* Change text color for better readability */
+}
+
+.night-booked {
+  background-color: pink;
+  color: black; /* Change text color for better readability */
+}
+
+.pending-booking {
+  background-color: blue;
+}
+
+.reservation-card {
+  border: 2px solid #f0f0f0; /* Light gray border */
+  border-radius: 8px; /* Rounded corners */
+  padding: 20px; /* Padding inside the card */
+  margin: 10px 0; /* Space between reservations */
+  background-color: #ffffff; /* White background for each card */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+  width: 100%;
+  max-width: 500px;
+  height: auto;
+  margin-left:50px;
+}
+
+.reservation-card h4 {
+  color: Brown; /* Dark color for the name */
+  margin-bottom: 10px; /* Space below the name */
+  font-weight: bold;
+  font-size: 25px;
+  margin-left:50px;
+}
+
+.reservation-card .event,
+.reservation-card .buffet,
+.reservation-card .time-slot,
+.reservation-card .status,
+.reservation-card .number-of-guests {
+  color: #FF6347; /* Red color for these elements */
+  font-weight: bold; /* Bold text */
+  margin-left:50px;
+}
+
+/* Optional: add hover effect for better interaction */
+.reservation-card:hover {
+  background-color: #f9f9f9; /* Light gray on hover */
+  border-color: #dcdcdc; /* Darker gray border on hover */
+}
+
+.total-reservations {
+  font-size: 1.2em; /* Larger font for total reservations */
+  font-weight: bold; /* Bold text */
+  color: #2980b9; /* Blue color for total reservations */
+  margin-bottom: 20px; /* Space below the total reservations */
+  margin-left:50px;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .status-box {
+    width: 100px; /* Reduce width on smaller screens */
+    font-size: 10px; /* Smaller font size */
+  }
+
+  .reservation-card {
+    padding: 15px; /* Less padding for smaller screens */
+  }
+
+  .reservation-card h4 {
+    font-size: 20px; /* Smaller font size for headings */
+  }
+
+  .total-reservations {
+    font-size: 1em; /* Adjust font size */
+  }
+}
+
+@media (max-width: 480px) {
+  .status-box {
+    width: 80px; /* Further reduce width on mobile screens */
+    font-size: 8px; /* Further reduce font size */
+  }
+
+  .reservation-card {
+    padding: 10px; /* Further reduce padding */
+    margin: 5px 0; /* Reduce margin for better fit */
+  }
+
+  .reservation-card h4 {
+    font-size: 18px; /* Further reduce font size for headings */
+    margin-left:50px;
+  }
+
+  .total-reservations {
+    font-size: 0.9em; /* Adjust font size */
+
+  }
+}
+
+
