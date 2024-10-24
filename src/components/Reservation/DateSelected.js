@@ -4,10 +4,13 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css"; // Ensure the calendar CSS is imported
 import './Calendar.css'; // Import CSS file for styling
 
+Modal.setAppElement('#root'); // Set the app root element for accessibility
+
 const DateSelected = () => {
   const [reservationDate, setReservationDate] = useState(new Date());
   const [reservations, setReservations] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const API_URL = process.env.REACT_APP_API_URL; // Fetch the API URL from environment variable
 
   // Function to handle date selection
   const handleDateChange = (date) => {
@@ -19,7 +22,7 @@ const DateSelected = () => {
     try {
       const formattedDate = date.toLocaleDateString("en-CA"); // Format date as 'YYYY-MM-DD'
       const response = await axios.get(
-        `/api/reservation/checkAvailability?reservationDate=${formattedDate}`
+        `${API_URL}/api/reservation/checkAvailability?reservationDate=${formattedDate}`
       );
       setReservations(response.data);
       setErrorMessage("");

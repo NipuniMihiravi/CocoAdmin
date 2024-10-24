@@ -4,6 +4,8 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import './Calendar.css';
 
+Modal.setAppElement('#root'); // Set the app root element for accessibility
+
 const CalendarView = () => {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -21,6 +23,7 @@ const CalendarView = () => {
   const [dateColors, setDateColors] = useState({});
   const [reservations, setReservations] = useState([]);
   const [filteredReservations, setFilteredReservations] = useState([]);
+  const API_URL = process.env.REACT_APP_API_URL; // Fetch the API URL from environment variable
 
   // Fetch availability based on the selected date
   useEffect(() => {
@@ -32,7 +35,7 @@ const CalendarView = () => {
   const checkAvailability = async (date) => {
     try {
       const formattedDate = date.toLocaleDateString('en-CA');
-      const response = await axios.get(`/api/reservation/checkAvailability?reservationDate=${formattedDate}`);
+      const response = await axios.get(`${API_URL}/api/reservation/checkAvailability?reservationDate=${formattedDate}`);
       const reservations = response.data;
 
       // Check full day booked
@@ -91,7 +94,7 @@ const CalendarView = () => {
 
   // Fetch reservations and map them to calendar colors
   useEffect(() => {
-    axios.get('/api/reservation') // Adjust your endpoint as needed
+    axios.get('${API_URL}/api/reservation') // Adjust your endpoint as needed
       .then((response) => {
         const fetchedReservations = response.data;
         setReservations(fetchedReservations);

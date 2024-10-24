@@ -7,6 +7,7 @@ import html2canvas from 'html2canvas'; // Import html2canvas
 import 'react-datepicker/dist/react-datepicker.css'; // Import CSS for DatePicker
 import './Reservation.css'; // Import CSS file for styling
 
+Modal.setAppElement('#root'); // Set the app root element for accessibility
 
 const AdminReservation = () => {
     const [reservations, setReservations] = useState([]);
@@ -17,6 +18,7 @@ const AdminReservation = () => {
     const [endDate, setEndDate] = useState(null); // End date for filtering
     const [searchTerm, setSearchTerm] = useState(""); // Search term
     const [isDateRangeSelected, setIsDateRangeSelected] = useState(false); // Track if date range is selected
+    const API_URL = process.env.REACT_APP_API_URL; // Fetch the API URL from environment variable
 
 
     useEffect(() => {
@@ -25,7 +27,7 @@ const AdminReservation = () => {
 
     const fetchReservations = async () => {
         try {
-            const response = await axios.get('/api/reservation'); // Adjust the API endpoint as needed
+            const response = await axios.get('${API_URL}/api/reservation'); // Adjust the API endpoint as needed
             setReservations(response.data);
         } catch (error) {
             console.error("Error fetching reservations:", error);
@@ -62,7 +64,7 @@ const handleEdit = async (updatedReservation) => {
 
     if (confirmEdit) {
         try {
-            await axios.put(`/api/reservation/${updatedReservation.id}`, updatedReservation); // Adjust the API endpoint
+            await axios.put(`${API_URL}/api/reservation/${updatedReservation.id}`, updatedReservation); // Adjust the API endpoint
             fetchReservations(); // Refresh the reservation list
             closeModal();
         } catch (error) {
@@ -76,7 +78,7 @@ const handleDelete = async (id) => {
 
     if (confirmDelete) {
         try {
-            await axios.delete(`/api/reservation/${id}`); // Adjust the API endpoint
+            await axios.delete(`${API_URL}/api/reservation/${id}`); // Adjust the API endpoint
             fetchReservations(); // Refresh the reservation list
         } catch (error) {
             console.error("Error deleting reservation:", error);

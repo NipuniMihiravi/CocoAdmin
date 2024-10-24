@@ -9,6 +9,7 @@ const ContactList = () => {
     const [contacts, setContacts] = useState([]);
     const [editContact, setEditContact] = useState(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+    const API_URL = process.env.REACT_APP_API_URL; // Fetch the API URL from environment variable
 
     useEffect(() => {
         fetchContacts();
@@ -16,7 +17,7 @@ const ContactList = () => {
 
     const fetchContacts = async () => {
         try {
-            const response = await axios.get('/api/contact'); // Fetch contacts from the backend
+            const response = await axios.get('${API_URL}/api/contact'); // Fetch contacts from the backend
             const sortedContacts = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sort by creation date, newest first
             setContacts(sortedContacts);
         } catch (error) {
@@ -28,7 +29,7 @@ const ContactList = () => {
         const confirmDelete = window.confirm("Are you sure you want to delete this contact?");
         if (confirmDelete) {
             try {
-                await axios.delete(`/api/contact/${id}`);
+                await axios.delete(`${API_URL}/api/contact/${id}`);
                 setContacts(contacts.filter(contact => contact.id !== id));
                 alert('Contact deleted successfully!');
             } catch (error) {
@@ -46,7 +47,7 @@ const ContactList = () => {
     const handleUpdateContact = async () => {
         if (editContact.replyNote && editContact.status) {
             try {
-                const response = await axios.put(`/api/contact/${editContact.id}`, editContact);
+                const response = await axios.put(`${API_URL}/api/contact/${editContact.id}`, editContact);
                 setContacts(contacts.map(contact =>
                     contact.id === editContact.id ? response.data : contact
                 ));

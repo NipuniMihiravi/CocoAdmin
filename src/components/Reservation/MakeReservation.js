@@ -4,6 +4,8 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css"; // Ensure the calendar CSS is imported
 import './Calendar.css'; // Import CSS file for styling
 
+Modal.setAppElement('#root'); // Set the app root element for accessibility
+
 const MakeReservation = () => {
   const [formData, setFormData] = useState({
     fullName: "",
@@ -20,6 +22,7 @@ const MakeReservation = () => {
   const [isFullDayBooked, setIsFullDayBooked] = useState(false);
   const [reservationDate, setReservationDate] = useState({});
   const [dateColors, setDateColors] = useState({});
+  const API_URL = process.env.REACT_APP_API_URL; // Fetch the API URL from environment variable
 
   // Handle input changes
   const handleInputChange = (e) => {
@@ -39,7 +42,7 @@ const MakeReservation = () => {
     try {
           // Convert date to ISO string format for the request
           const formattedDate = new Date(date).toISOString().split('T')[0];
-          const response = await axios.get(`/api/reservation/checkAvailability?reservationDate=${formattedDate}`);
+          const response = await axios.get(`${API_URL}/api/reservation/checkAvailability?reservationDate=${formattedDate}`);
           const reservations = response.data;
 
 
@@ -82,7 +85,7 @@ const MakeReservation = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("/api/reservation", formData);
+      const response = await axios.post("${API_URL}/api/reservation", formData);
       if (response.status === 200) {
         alert("Reservation submitted successfully!");
       }
@@ -99,7 +102,7 @@ const MakeReservation = () => {
 
   // Fetch reservations on component mount
   useEffect(() => {
-    axios.get('/api/reservation') // Adjust your endpoint as needed
+    axios.get('${API_URL}/api/reservation') // Adjust your endpoint as needed
       .then((response) => {
         const fetchedReservations = response.data;
         mapReservationToColors(fetchedReservations);
