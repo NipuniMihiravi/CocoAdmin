@@ -12,6 +12,7 @@ const GalleryForm = () => {
     const [items, setItems] = useState([]);
     const [newGalleryCategory, setNewGalleryCategory] = useState('');
     const [imagePreview, setImagePreview] = useState('');
+    const API_URL = process.env.REACT_APP_API_URL; // Fetch the API URL from environment variable
 
     // Fetch all galleries
     useEffect(() => {
