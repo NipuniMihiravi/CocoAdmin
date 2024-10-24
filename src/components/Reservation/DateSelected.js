@@ -11,6 +11,7 @@ const DateSelected = () => {
   const [reservationDate, setReservationDate] = useState(new Date());
   const [reservations, setReservations] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
+  const [bookedDates, setBookedDates] = useState(new Set()); // To track booked dates
   const API_URL = process.env.REACT_APP_API_URL; // Fetch the API URL from environment variable
 
   // Function to handle date selection
@@ -40,6 +41,26 @@ const DateSelected = () => {
     }
   }, [reservationDate]);
 
+  // Fetch all reservations to identify booked dates
+  useEffect(() => {
+    const fetchAllReservations = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/api/reservation`); // Adjust your endpoint as needed
+        const allReservations = response.data;
+
+        // Extract dates for which reservations exist
+        const dates = new Set(allReservations.map(reservation => {
+          return new Date(reservation.reservationDate).toLocaleDateString("en-CA");
+        }));
+        setBookedDates(dates);
+      } catch (error) {
+        console.error("Error fetching all reservations:", error);
+      }
+    };
+
+    fetchAllReservations();
+  }, [API_URL]);
+
   return (
     <div className="full-calendar-container">
       <h2>Select Date - View Reservation</h2>
@@ -51,8 +72,7 @@ const DateSelected = () => {
           onChange={handleDateChange}
           tileClassName={({ date }) => {
             const formattedDate = date.toLocaleDateString("en-CA");
-            // Apply CSS class to highlight booked dates if needed
-            return "";
+            return bookedDates.has(formattedDate) ? 'booked' : ''; // Highlight booked dates
           }}
         />
       </div>
