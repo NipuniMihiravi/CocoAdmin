@@ -15,13 +15,13 @@ const MakeReservation = () => {
     timeSlot: "",
     reservationDate: "",
     event: "",
-    numberOfPack:"",
+    numberOfPack: "",
     specificNote: ""
   });
 
   const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
   const [isFullDayBooked, setIsFullDayBooked] = useState(false);
-  const [reservationDate, setReservationDate] = useState({});
+  const [reservationDate, setReservationDate] = useState(new Date());
   const [dateColors, setDateColors] = useState({});
   const API_URL = process.env.REACT_APP_API_URL; // Fetch the API URL from environment variable
 
@@ -33,24 +33,18 @@ const MakeReservation = () => {
 
   // Fetch availability based on the selected date
   useEffect(() => {
-    if (reservationDate) {
-      checkAvailability(reservationDate);
-    }
+    checkAvailability(reservationDate);
   }, [reservationDate]);
 
   // Function to check availability from the backend
   const checkAvailability = async (date) => {
     try {
-          // Convert date to ISO string format for the request
-          const formattedDate = new Date(date).toISOString().split('T')[0];
-          const response = await axios.get(`${API_URL}/api/reservation/checkAvailability?reservationDate=${formattedDate}`);
-          const reservations = response.data;
-
+      const formattedDate = new Date(date).toISOString().split('T')[0];
+      const response = await axios.get(`${API_URL}/api/reservation/checkAvailability?reservationDate=${formattedDate}`);
+      const reservations = response.data;
 
       // Check if the full day is booked
-      const fullDayBooked = reservations.some(
-        (reservation) => reservation.timeSlot === "full"
-      );
+      const fullDayBooked = reservations.some(reservation => reservation.timeSlot === "full");
       if (fullDayBooked) {
         setIsFullDayBooked(true);
         setAvailableTimeSlots([]);
@@ -58,10 +52,7 @@ const MakeReservation = () => {
       }
 
       setIsFullDayBooked(false);
-
-      const bookedTimeSlots = reservations.map(
-        (reservation) => reservation.timeSlot
-      );
+      const bookedTimeSlots = reservations.map(reservation => reservation.timeSlot);
 
       const isDayBooked = bookedTimeSlots.includes("Day Time");
       const isNightBooked = bookedTimeSlots.includes("Night Time");
@@ -86,15 +77,26 @@ const MakeReservation = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("${API_URL}/api/reservation", formData);
+      const response = await axios.post(`${API_URL}/api/reservation`, formData);
       if (response.status === 200) {
         alert("Reservation submitted successfully!");
+        // Reset formData after successful submission
+        setFormData({
+          fullName: "",
+          email: "",
+          contactNo: "",
+          timeSlot: "",
+          reservationDate: "",
+          event: "",
+          numberOfPack: "",
+          specificNote: ""
+        });
+        // Update calendar with new reservation
+        fetchReservations();
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {
-        alert(
-          "This time slot is already booked. Please choose a different time or date."
-        );
+        alert("This time slot is already booked. Please choose a different time or date.");
       } else {
         console.error("Error submitting reservation", error);
       }
@@ -103,15 +105,18 @@ const MakeReservation = () => {
 
   // Fetch reservations on component mount
   useEffect(() => {
-    axios.get('${API_URL}/api/reservation') // Adjust your endpoint as needed
-      .then((response) => {
-        const fetchedReservations = response.data;
-        mapReservationToColors(fetchedReservations);
-      })
-      .catch((error) => {
-        console.error('Error fetching reservations:', error);
-      });
+    fetchReservations();
   }, []);
+
+  const fetchReservations = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/api/reservation`); // Adjust your endpoint as needed
+      const fetchedReservations = response.data;
+      mapReservationToColors(fetchedReservations);
+    } catch (error) {
+      console.error('Error fetching reservations:', error);
+    }
+  };
 
   // Function to map reservation data to colors based on timeSlot
   const mapReservationToColors = (reservations) => {
@@ -145,6 +150,7 @@ const MakeReservation = () => {
     }
     return '';
   };
+
 
   return (
     <div className="full-calendar-container">
