@@ -26,12 +26,30 @@ const CalendarView = () => {
   const [filteredReservations, setFilteredReservations] = useState([]);
   const API_URL = process.env.REACT_APP_API_URL; // Fetch the API URL from environment variable
 
+  // Fetch reservations on initial load and map them to colors
+  useEffect(() => {
+    const fetchReservations = async () => {
+      try {
+        const response = await axios.get(`${API_URL}/api/reservation`);
+        console.log('Fetched reservations:', response.data); // Check fetched data
+        setReservations(response.data);
+        mapReservationToColors(response.data);
+        filterReservationsByDate(response.data, reservationDate); // Filter for the initial date
+      } catch (error) {
+        console.error('Error fetching reservations:', error);
+      }
+    };
+
+    fetchReservations();
+  }, [API_URL]); // Fetch reservations once on component mount
+
   // Fetch availability based on the selected date
   useEffect(() => {
     if (reservationDate) {
       checkAvailability(reservationDate);
+      filterReservationsByDate(reservations, reservationDate); // Filter reservations for the selected date
     }
-  }, [reservationDate]);
+  }, [reservationDate, reservations]); // Run when reservationDate or reservations change
 
   const checkAvailability = async (date) => {
     try {
@@ -69,44 +87,29 @@ const CalendarView = () => {
     }
   };
 
-   // Function to map reservation data to colors based on timeSlot
-   const mapReservationToColors = (reservations) => {
-     const colors = {};
+  // Function to map reservation data to colors based on timeSlot
+  const mapReservationToColors = (reservations) => {
+    const colors = {};
 
-     reservations.forEach((reservation) => {
-       const date = new Date(reservation.reservationDate);
-       const formattedDate = date.toLocaleDateString('en-CA');
+    reservations.forEach((reservation) => {
+      const date = new Date(reservation.reservationDate);
+      const formattedDate = date.toLocaleDateString('en-CA');
 
-       // Check the status first
-       if (reservation.status === 'Advance' || reservation.status === 'Confirm') {
-         // Existing logic for time slots
-         if (reservation.timeSlot === 'Full Time') {
-           colors[formattedDate] = 'red'; // Fully booked
-         } else if (reservation.timeSlot === 'Day Time') {
-           colors[formattedDate] = colors[formattedDate] === 'pink' ? 'red' : 'yellow'; // If night is also booked, make it red
-         } else if (reservation.timeSlot === 'Night Time') {
-           colors[formattedDate] = colors[formattedDate] === 'yellow' ? 'red' : 'pink'; // If day is also booked, make it red
-         }
-       }
-     });
+      // Check the status first
+      if (reservation.status === 'Advance' || reservation.status === 'Confirm') {
+        // Existing logic for time slots
+        if (reservation.timeSlot === 'Full Time') {
+          colors[formattedDate] = 'red'; // Fully booked
+        } else if (reservation.timeSlot === 'Day Time') {
+          colors[formattedDate] = colors[formattedDate] === 'pink' ? 'red' : 'yellow'; // If night is also booked, make it red
+        } else if (reservation.timeSlot === 'Night Time') {
+          colors[formattedDate] = colors[formattedDate] === 'yellow' ? 'red' : 'pink'; // If day is also booked, make it red
+        }
+      }
+    });
 
-     setDateColors(colors);
-   };
-
-  // Fetch reservations and map them to calendar colors
-  useEffect(() => {
-    axios.get('${API_URL}/api/reservation') // Adjust your endpoint as needed
-      .then((response) => {
-         console.log('Fetched reservations:', response.data);
-        const fetchedReservations = response.data;
-        setReservations(fetchedReservations);
-        mapReservationToColors(fetchedReservations);
-        filterReservationsByDate(fetchedReservations, reservationDate); // Filter reservations for the initial date
-      })
-      .catch((error) => {
-        console.error('Error fetching reservations:', error);
-      });
-  }, [reservationDate]);
+    setDateColors(colors);
+  };
 
   // Function to filter reservations based on selected date
   const filterReservationsByDate = (reservations, date) => {
@@ -128,7 +131,6 @@ const CalendarView = () => {
 
   const handleDateChange = (date) => {
     setReservationDate(date);
-    filterReservationsByDate(reservations, date);
   };
 
   return (
@@ -162,11 +164,11 @@ const CalendarView = () => {
                 <p className="event">Event: {reservation.event}</p>
                 <p className="time-slot">Time Slot: {reservation.timeSlot}</p>
                 <p className="number-of-guests">Number of Guests: {reservation.numberOfPack}</p>
-                <p className="buffet">Buffet: {reservation.buffet})</p>
-                <p className="buffetPrice">Buffet Price:Rs. {reservation.buffetPrice}</p>
-                <p className="total-price">Total Price: Rs.{reservation.totalPrice}</p>
-                <p className="advance-payment">Advance Payment: Rs.{reservation.advancePayment}</p>
-                <p className="due-payment">Due Payment: Rs.{reservation.duePayment}</p>
+                <p className="buffet">Buffet: {reservation.buffet}</p>
+                <p className="buffetPrice">Buffet Price: Rs. {reservation.buffetPrice}</p>
+                <p className="total-price">Total Price: Rs. {reservation.totalPrice}</p>
+                <p className="advance-payment">Advance Payment: Rs. {reservation.advancePayment}</p>
+                <p className="due-payment">Due Payment: Rs. {reservation.duePayment}</p>
                 <p className="status">Status: {reservation.status}</p>
                 <p className="notes">Notes: {reservation.specialNote1}, {reservation.specialNote2}</p>
               </div>
