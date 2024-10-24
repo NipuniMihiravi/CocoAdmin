@@ -19,7 +19,7 @@ const GalleryForm = () => {
     useEffect(() => {
         const fetchGalleries = async () => {
             try {
-                const response = await axios.get('${API_URL}/api/gallery');
+                const response = await axios.get(`${API_URL}/api/gallery`); // Corrected backtick
                 setGalleries(response.data);
             } catch (error) {
                 console.error('Error fetching galleries', error);
@@ -27,7 +27,7 @@ const GalleryForm = () => {
         };
 
         fetchGalleries();
-    }, []);
+    }, [API_URL]);
 
     // Fetch items for the selected gallery
     useEffect(() => {
@@ -43,13 +43,13 @@ const GalleryForm = () => {
 
             fetchItems();
         }
-    }, [selectedGalleryId]);
+    }, [selectedGalleryId, API_URL]);
 
     // Handle adding a new gallery
     const handleAddGallery = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('${API_URL}/api/gallery', {
+            const response = await axios.post(`${API_URL}/api/gallery`, {
                 name: galleryName,
                 category: newGalleryCategory,
                 images: []
@@ -58,7 +58,7 @@ const GalleryForm = () => {
                 alert('Gallery added successfully');
                 setGalleryName('');
                 setNewGalleryCategory('');
-                const updatedResponse = await axios.get('${API_URL}/api/gallery');
+                const updatedResponse = await axios.get(`${API_URL}/api/gallery`);
                 setGalleries(updatedResponse.data);
             }
         } catch (error) {
@@ -83,6 +83,7 @@ const GalleryForm = () => {
                     reader.readAsDataURL(file);
                 });
             }));
+
             const response = await axios.post(`${API_URL}/api/gallery/${selectedGalleryId}/items`, items);
             if (response.status === 200) {
                 alert('Items added to gallery successfully');
@@ -114,9 +115,12 @@ const GalleryForm = () => {
 
     // Handle file input change
     const handleFileChange = (e) => {
-        setImageFiles([...e.target.files]);
-        if (e.target.files.length > 0) {
-            const file = e.target.files[0];
+        const files = Array.from(e.target.files);
+        setImageFiles(files);
+
+        // Generate preview for the first file
+        if (files.length > 0) {
+            const file = files[0];
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result);
@@ -197,7 +201,7 @@ const GalleryForm = () => {
                             <div className="image-preview">
                                 <img
                                     src={imagePreview}
-                                    alt={`Preview of uploaded image`}
+                                    alt="Preview of uploaded image"
                                     style={{ maxWidth: '100%', height: 'auto' }}
                                 />
                             </div>
@@ -216,7 +220,7 @@ const GalleryForm = () => {
                         <li key={item.id} className="item">
                             <img
                                 src={`data:image/jpeg;base64,${item.imageData}`}
-                                alt={`Item from gallery`}  // Updated alt attribute
+                                alt="Item from gallery"
                                 className="item-image"
                             />
                             <div className="button-container">

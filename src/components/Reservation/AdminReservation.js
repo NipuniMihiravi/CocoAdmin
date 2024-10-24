@@ -27,12 +27,14 @@ const AdminReservation = () => {
 
     const fetchReservations = async () => {
         try {
-            const response = await axios.get('${API_URL}/api/reservation'); // Adjust the API endpoint as needed
+            const response = await axios.get(`${API_URL}/api/reservation`); // Ensure API endpoint is correct
+            console.log("API Response:", response.data); // Log the data
             setReservations(response.data);
         } catch (error) {
             console.error("Error fetching reservations:", error);
         }
     };
+
 
     const filterReservations = () => {
         return reservations.filter((reservation) => {

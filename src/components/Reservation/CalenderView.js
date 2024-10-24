@@ -97,6 +97,7 @@ const CalendarView = () => {
   useEffect(() => {
     axios.get('${API_URL}/api/reservation') // Adjust your endpoint as needed
       .then((response) => {
+         console.log('Fetched reservations:', response.data);
         const fetchedReservations = response.data;
         setReservations(fetchedReservations);
         mapReservationToColors(fetchedReservations);

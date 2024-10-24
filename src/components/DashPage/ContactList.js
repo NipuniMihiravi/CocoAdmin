@@ -15,15 +15,18 @@ const ContactList = () => {
         fetchContacts();
     }, []);
 
+
     const fetchContacts = async () => {
         try {
-            const response = await axios.get('${API_URL}/api/contact'); // Fetch contacts from the backend
-            const sortedContacts = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sort by creation date, newest first
+            const response = await axios.get(`${API_URL}/api/contact`);
+            console.log(response.data); // Log the response to check its structure
+            const sortedContacts = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             setContacts(sortedContacts);
         } catch (error) {
             console.error('Error fetching contacts:', error);
         }
     };
+
 
     const handleDelete = async (id) => {
         const confirmDelete = window.confirm("Are you sure you want to delete this contact?");
