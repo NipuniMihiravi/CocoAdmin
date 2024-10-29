@@ -18,27 +18,32 @@ const AdminReservation = () => {
     const [endDate, setEndDate] = useState(null); // End date for filtering
     const [searchTerm, setSearchTerm] = useState(""); // Search term
     const [isDateRangeSelected, setIsDateRangeSelected] = useState(false); // Track if date range is selected
-    const API_URL = 'https://cocoback-6.onrender.com/api/reservation';
+    const API_URL = "https://cocoback-6.onrender.com/api/reservation";
+
 
     useEffect(() => {
-        const fetchReservations = async () => {
-            try {
-                const response = await axios.get(`${API_URL}/api/reservation`); // Ensure API endpoint is correct
-                console.log("API Response:", response.data); // Log the data
-                setReservations(response.data);
-            } catch (error) {
-                console.error("Error fetching reservations:", error);
-            }
-        };
+        fetchReservations();
+    }, []);
 
-        fetchReservations(); // Fetch on initial mount
+    const fetchReservations = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/api/reservation`); // Ensure API endpoint is correct
+            console.log("API Response:", response.data); // Log the data
+            setReservations(response.data);
+        } catch (error) {
+            console.error("Error fetching reservations:", error);
+        }
+    };
 
-        // Set up an interval to ping for new reservation data every 60 seconds
-        const interval = setInterval(fetchReservations, 60000); // 60 seconds
+    useEffect(() => {
+        fetchReservations();
+        const interval = setInterval(() => {
+          fetchReservations(); // Ping to fetch reservations periodically
+        }, 60000); // Ping every 60 seconds
 
-        // Clean up the interval on component unmount
-        return () => clearInterval(interval);
-    }, [API_URL]); // No need to depend on reservationDate
+        return () => clearInterval(interval); // Clean up on unmount
+      }, []);
+
 
     const filterReservations = () => {
         return reservations.filter((reservation) => {
@@ -63,32 +68,34 @@ const AdminReservation = () => {
         setIsEditing(false);
     };
 
-    const handleEdit = async (updatedReservation) => {
-        const confirmEdit = window.confirm("Are you sure you want to make this change?");
 
-        if (confirmEdit) {
-            try {
-                await axios.put(`${API_URL}/api/reservation/${updatedReservation.id}`, updatedReservation); // Adjust the API endpoint
-                fetchReservations(); // Refresh the reservation list
-                closeModal();
-            } catch (error) {
-                console.error("Error updating reservation:", error);
-            }
+
+const handleEdit = async (updatedReservation) => {
+    const confirmEdit = window.confirm("Are you sure you want to make this change?");
+
+    if (confirmEdit) {
+        try {
+            await axios.put(`${API_URL}/api/reservation/${updatedReservation.id}`, updatedReservation); // Adjust the API endpoint
+            fetchReservations(); // Refresh the reservation list
+            closeModal();
+        } catch (error) {
+            console.error("Error updating reservation:", error);
         }
-    };
+    }
+};
 
-    const handleDelete = async (id) => {
-        const confirmDelete = window.confirm("Are you sure you want to delete this reservation?");
+const handleDelete = async (id) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this reservation?");
 
-        if (confirmDelete) {
-            try {
-                await axios.delete(`${API_URL}/api/reservation/${id}`); // Adjust the API endpoint
-                fetchReservations(); // Refresh the reservation list
-            } catch (error) {
-                console.error("Error deleting reservation:", error);
-            }
+    if (confirmDelete) {
+        try {
+            await axios.delete(`${API_URL}/api/reservation/${id}`); // Adjust the API endpoint
+            fetchReservations(); // Refresh the reservation list
+        } catch (error) {
+            console.error("Error deleting reservation:", error);
         }
-    };
+    }
+};
 
     // PDF generation function
     const generatePDF = async () => {
@@ -97,7 +104,7 @@ const AdminReservation = () => {
         const data = canvas.toDataURL('image/png');
         const pdf = new jsPDF();
         pdf.addImage(data, 'PNG', 0, 0);
-        pdf.save(`reservations_${startDate?.toLocaleDateString() || 'all'}_${endDate?.toLocaleDateString() || 'all'}.pdf`);
+        pdf.save(`reservations_${startDate.toLocaleDateString()}_${endDate.toLocaleDateString()}.pdf`);
     };
 
     const calculateServiceCharge = () => {
@@ -135,9 +142,12 @@ const AdminReservation = () => {
 
     // Check if a date range is selected
     useEffect(() => {
-        setIsDateRangeSelected(!!startDate && !!endDate);
+        if (startDate && endDate) {
+            setIsDateRangeSelected(true);
+        } else {
+            setIsDateRangeSelected(false);
+        }
     }, [startDate, endDate]);
-
 
     return (
         <div className="date-calender-container">
