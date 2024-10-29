@@ -1,11 +1,11 @@
-import Modal from 'react-modal';
+import Modal from "react-modal";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css"; // Ensure the calendar CSS is imported
-import './Calendar.css'; // Import CSS file for styling
+import "./Calendar.css"; // Import CSS file for styling
 
-Modal.setAppElement('#root'); // Set the app root element for accessibility
+Modal.setAppElement("#root"); // Set the app root element for accessibility
 
 const MakeReservation = () => {
   const [formData, setFormData] = useState({
@@ -16,14 +16,14 @@ const MakeReservation = () => {
     reservationDate: "",
     event: "",
     numberOfPack: "",
-    specificNote: ""
+    specificNote: "",
   });
 
   const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
   const [isFullDayBooked, setIsFullDayBooked] = useState(false);
   const [reservationDate, setReservationDate] = useState(new Date());
   const [dateColors, setDateColors] = useState({});
-  const API_URL = process.env.REACT_APP_API_URL; // Fetch the API URL from environment variable
+  const API_URL = "https://cocoback-6.onrender.com/api/reservation";
 
   // Handle input changes
   const handleInputChange = (e) => {
@@ -39,12 +39,16 @@ const MakeReservation = () => {
   // Function to check availability from the backend
   const checkAvailability = async (date) => {
     try {
-      const formattedDate = new Date(date).toISOString().split('T')[0];
-      const response = await axios.get(`${API_URL}/api/reservation/checkAvailability?reservationDate=${formattedDate}`);
+      const formattedDate = new Date(date).toISOString().split("T")[0];
+      const response = await axios.get(
+        `${API_URL}/api/reservation/checkAvailability?reservationDate=${formattedDate}`
+      );
       const reservations = response.data;
 
       // Check if the full day is booked
-      const fullDayBooked = reservations.some(reservation => reservation.timeSlot === "full");
+      const fullDayBooked = reservations.some(
+        (reservation) => reservation.timeSlot === "full"
+      );
       if (fullDayBooked) {
         setIsFullDayBooked(true);
         setAvailableTimeSlots([]);
@@ -52,7 +56,9 @@ const MakeReservation = () => {
       }
 
       setIsFullDayBooked(false);
-      const bookedTimeSlots = reservations.map(reservation => reservation.timeSlot);
+      const bookedTimeSlots = reservations.map(
+        (reservation) => reservation.timeSlot
+      );
 
       const isDayBooked = bookedTimeSlots.includes("Day Time");
       const isNightBooked = bookedTimeSlots.includes("Night Time");
@@ -89,14 +95,16 @@ const MakeReservation = () => {
           reservationDate: "",
           event: "",
           numberOfPack: "",
-          specificNote: ""
+          specificNote: "",
         });
         // Update calendar with new reservation
         fetchReservations();
       }
     } catch (error) {
       if (error.response && error.response.status === 400) {
-        alert("This time slot is already booked. Please choose a different time or date.");
+        alert(
+          "This time slot is already booked. Please choose a different time or date."
+        );
       } else {
         console.error("Error submitting reservation", error);
       }
@@ -106,6 +114,11 @@ const MakeReservation = () => {
   // Fetch reservations on component mount
   useEffect(() => {
     fetchReservations();
+    const interval = setInterval(() => {
+      fetchReservations(); // Ping to fetch reservations periodically
+    }, 60000); // Ping every 60 seconds
+
+    return () => clearInterval(interval); // Clean up on unmount
   }, []);
 
   const fetchReservations = async () => {
@@ -114,7 +127,7 @@ const MakeReservation = () => {
       const fetchedReservations = response.data;
       mapReservationToColors(fetchedReservations);
     } catch (error) {
-      console.error('Error fetching reservations:', error);
+      console.error("Error fetching reservations:", error);
     }
   };
 
@@ -124,17 +137,22 @@ const MakeReservation = () => {
 
     reservations.forEach((reservation) => {
       const date = new Date(reservation.reservationDate);
-      const formattedDate = date.toLocaleDateString('en-CA');
+      const formattedDate = date.toLocaleDateString("en-CA");
 
       // Check the status first
-      if (reservation.status === 'Advance' || reservation.status === 'Confirm') {
+      if (
+        reservation.status === "Advance" ||
+        reservation.status === "Confirm"
+      ) {
         // Existing logic for time slots
-        if (reservation.timeSlot === 'Full Time') {
-          colors[formattedDate] = 'red'; // Fully booked
-        } else if (reservation.timeSlot === 'Day Time') {
-          colors[formattedDate] = colors[formattedDate] === 'pink' ? 'red' : 'yellow'; // If night is also booked, make it red
-        } else if (reservation.timeSlot === 'Night Time') {
-          colors[formattedDate] = colors[formattedDate] === 'yellow' ? 'red' : 'pink'; // If day is also booked, make it red
+        if (reservation.timeSlot === "Full Time") {
+          colors[formattedDate] = "red"; // Fully booked
+        } else if (reservation.timeSlot === "Day Time") {
+          colors[formattedDate] =
+            colors[formattedDate] === "pink" ? "red" : "yellow"; // If night is also booked, make it red
+        } else if (reservation.timeSlot === "Night Time") {
+          colors[formattedDate] =
+            colors[formattedDate] === "yellow" ? "red" : "pink"; // If day is also booked, make it red
         }
       }
     });
@@ -144,22 +162,29 @@ const MakeReservation = () => {
 
   // Function to render calendar tiles with colors
   const tileClassName = ({ date, view }) => {
-    if (view === 'month') {
-      const formattedDate = date.toLocaleDateString('en-CA'); // Format the date to 'YYYY-MM-DD' in local time
-      return dateColors[formattedDate] ? `reservation-${dateColors[formattedDate]}` : '';
+    if (view === "month") {
+      const formattedDate = date.toLocaleDateString("en-CA"); // Format the date to 'YYYY-MM-DD' in local time
+      return dateColors[formattedDate]
+        ? `reservation-${dateColors[formattedDate]}`
+        : "";
     }
-    return '';
+    return "";
   };
-
 
   return (
     <div className="full-calendar-container">
       <h2>Event Calendar</h2>
       <div className="booking-status-container">
-              <div className="status-box full-booked"><span>Full Booked</span></div>
-              <div className="status-box day-booked"><span>Day Booked</span></div>
-              <div className="status-box night-booked"><span>Night Booked</span></div>
-            </div>
+        <div className="status-box full-booked">
+          <span>Full Booked</span>
+        </div>
+        <div className="status-box day-booked">
+          <span>Day Booked</span>
+        </div>
+        <div className="status-box night-booked">
+          <span>Night Booked</span>
+        </div>
+      </div>
       <div className="calendar-container">
         <Calendar tileClassName={tileClassName} />
       </div>
@@ -248,25 +273,27 @@ const MakeReservation = () => {
           </select>
         </div>
 
-       <div>
-           <label>No Of Packs:</label>
-           <input
-               type="number" // Change this to 'number' to allow only numeric input
-               name="numberOfPack" // Use a consistent name
-               value={formData.numberOfPack}
-               onChange={handleInputChange}
-               required
-           />
-       </div>
         <div>
-          <label>Specific Note:</label>
+          <label>No Of Packs:</label>
+          <input
+            type="number" // Change this to 'number' to allow only numeric input
+            name="numberOfPack"
+            value={formData.numberOfPack}
+            onChange={handleInputChange}
+            required
+          />
+        </div>
+
+        <div>
+          <label>Specific Notes:</label>
           <textarea
             name="specificNote"
             value={formData.specificNote}
             onChange={handleInputChange}
-          ></textarea>
+          />
         </div>
-        <button type="submit">Submit</button>
+
+        <button type="submit">Submit Reservation</button>
       </form>
     </div>
   );

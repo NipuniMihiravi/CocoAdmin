@@ -24,7 +24,7 @@ const CalendarView = () => {
   const [dateColors, setDateColors] = useState({});
   const [reservations, setReservations] = useState([]);
   const [filteredReservations, setFilteredReservations] = useState([]);
-  const API_URL = process.env.REACT_APP_API_URL; // Fetch the API URL from environment variable
+  const API_URL = 'https://cocoback-6.onrender.com/api/reservation';
 
   // Fetch reservations on initial load and map them to colors
   useEffect(() => {
@@ -40,8 +40,14 @@ const CalendarView = () => {
       }
     };
 
-    fetchReservations();
-  }, [API_URL]); // Fetch reservations once on component mount
+    fetchReservations(); // Fetch on initial mount
+
+    // Set up an interval to ping for new reservation data every 60 seconds
+    const interval = setInterval(fetchReservations, 60000); // 60 seconds
+
+    // Clean up the interval on component unmount
+    return () => clearInterval(interval);
+  }, [API_URL, reservationDate]); // Also depend on reservationDate for re-fetching
 
   // Fetch availability based on the selected date
   useEffect(() => {
