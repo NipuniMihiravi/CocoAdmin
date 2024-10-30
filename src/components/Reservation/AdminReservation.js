@@ -75,7 +75,7 @@ const handleEdit = async (updatedReservation) => {
 
     if (confirmEdit) {
         try {
-            await axios.put(`${API_URL}/api/reservation/${updatedReservation.id}`, updatedReservation); // Adjust the API endpoint
+            await axios.put(`${API_URL}/${updatedReservation.id}`, updatedReservation); // Adjust the API endpoint
             fetchReservations(); // Refresh the reservation list
             closeModal();
         } catch (error) {
@@ -89,7 +89,7 @@ const handleDelete = async (id) => {
 
     if (confirmDelete) {
         try {
-            await axios.delete(`${API_URL}/api/reservation/${id}`); // Adjust the API endpoint
+            await axios.delete(`${API_URL}/${id}`); // Adjust the API endpoint
             fetchReservations(); // Refresh the reservation list
         } catch (error) {
             console.error("Error deleting reservation:", error);
