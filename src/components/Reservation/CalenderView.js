@@ -26,12 +26,12 @@ const CalendarView = () => {
   const [filteredReservations, setFilteredReservations] = useState([]);
   const API_URL = 'https://cocoback-6.onrender.com/api/reservation';
 
-  // Fetch reservations on initial load and map them to colors
+  // Fetch reservations and map them to colors
   useEffect(() => {
     const fetchReservations = async () => {
       try {
-        const response = await axios.get(`${API_URL}/api/reservation`);
-        console.log('Fetched reservations:', response.data); // Check fetched data
+        const response = await axios.get(API_URL);
+        console.log('Fetched reservations:', response.data); // Log fetched data
         setReservations(response.data);
         mapReservationToColors(response.data);
         filterReservationsByDate(response.data, reservationDate); // Filter for the initial date
@@ -40,16 +40,19 @@ const CalendarView = () => {
       }
     };
 
-    fetchReservations(); // Fetch on initial mount
+    fetchReservations();
 
-    // Set up an interval to ping for new reservation data every 60 seconds
-    const interval = setInterval(fetchReservations, 60000); // 60 seconds
+    // Set up pinging every 5 minutes to keep the backend alive
+    const intervalId = setInterval(() => {
+      axios.get(API_URL)
+        .then(() => console.log('Ping successful'))
+        .catch(error => console.error('Ping failed:', error));
+    }, 300000); // Ping every 5 minutes
 
-    // Clean up the interval on component unmount
-    return () => clearInterval(interval);
-  }, [API_URL, reservationDate]); // Also depend on reservationDate for re-fetching
+    return () => clearInterval(intervalId); // Clear interval on component unmount
+  }, []); // Run once on component mount
 
-  // Fetch availability based on the selected date
+  // Update time slots and reservations when the date changes
   useEffect(() => {
     if (reservationDate) {
       checkAvailability(reservationDate);
@@ -57,13 +60,14 @@ const CalendarView = () => {
     }
   }, [reservationDate, reservations]); // Run when reservationDate or reservations change
 
+  // Check availability for the selected date
   const checkAvailability = async (date) => {
     try {
       const formattedDate = date.toLocaleDateString('en-CA');
-      const response = await axios.get(`${API_URL}/api/reservation/checkAvailability?reservationDate=${formattedDate}`);
+      const response = await axios.get(`${API_URL}/checkAvailability?reservationDate=${formattedDate}`);
       const reservations = response.data;
 
-      // Check full day booked
+      // Check for full-day booking or partial slots
       const fullDayBooked = reservations.some(reservation => reservation.timeSlot === "Full Time");
       if (fullDayBooked) {
         setAvailableTimeSlots([]);
@@ -88,12 +92,13 @@ const CalendarView = () => {
       }
 
       setAvailableTimeSlots(["Day Time", "Night Time", "Full Time"]);
+      setErrorMessage("");
     } catch (error) {
       console.error("Error checking availability", error);
     }
   };
 
-  // Function to map reservation data to colors based on timeSlot
+  // Map reservation data to colors based on timeSlot
   const mapReservationToColors = (reservations) => {
     const colors = {};
 
@@ -101,15 +106,13 @@ const CalendarView = () => {
       const date = new Date(reservation.reservationDate);
       const formattedDate = date.toLocaleDateString('en-CA');
 
-      // Check the status first
       if (reservation.status === 'Advance' || reservation.status === 'Confirm') {
-        // Existing logic for time slots
         if (reservation.timeSlot === 'Full Time') {
           colors[formattedDate] = 'red'; // Fully booked
         } else if (reservation.timeSlot === 'Day Time') {
-          colors[formattedDate] = colors[formattedDate] === 'pink' ? 'red' : 'yellow'; // If night is also booked, make it red
+          colors[formattedDate] = colors[formattedDate] === 'pink' ? 'red' : 'yellow';
         } else if (reservation.timeSlot === 'Night Time') {
-          colors[formattedDate] = colors[formattedDate] === 'yellow' ? 'red' : 'pink'; // If day is also booked, make it red
+          colors[formattedDate] = colors[formattedDate] === 'yellow' ? 'red' : 'pink';
         }
       }
     });
@@ -117,7 +120,7 @@ const CalendarView = () => {
     setDateColors(colors);
   };
 
-  // Function to filter reservations based on selected date
+  // Filter reservations based on selected date
   const filterReservationsByDate = (reservations, date) => {
     const formattedDate = date.toLocaleDateString('en-CA');
     const filtered = reservations.filter(reservation =>
@@ -126,7 +129,7 @@ const CalendarView = () => {
     setFilteredReservations(filtered);
   };
 
-  // Function to render calendar tiles with colors
+  // Render calendar tiles with colors
   const tileClassName = ({ date, view }) => {
     if (view === 'month') {
       const formattedDate = date.toLocaleDateString('en-CA');

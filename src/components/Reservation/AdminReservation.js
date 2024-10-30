@@ -18,31 +18,31 @@ const AdminReservation = () => {
     const [endDate, setEndDate] = useState(null); // End date for filtering
     const [searchTerm, setSearchTerm] = useState(""); // Search term
     const [isDateRangeSelected, setIsDateRangeSelected] = useState(false); // Track if date range is selected
-    const API_URL = "https://cocoback-6.onrender.com/api/reservation";
+    const API_URL = 'https://cocoback-6.onrender.com/api/reservation';
 
 
     useEffect(() => {
         fetchReservations();
+
+        // Set up pinging every 5 minutes (300000 ms)
+        const intervalId = setInterval(() => {
+            axios.get(API_URL)
+                .then(() => console.log('Ping successful'))
+                .catch(error => console.error('Ping failed:', error));
+        }, 300000); // Ping every 5 minutes
+
+        return () => clearInterval(intervalId); // Clear interval on component unmount
     }, []);
 
     const fetchReservations = async () => {
         try {
-            const response = await axios.get(`${API_URL}/api/reservation`); // Ensure API endpoint is correct
-            console.log("API Response:", response.data); // Log the data
+            const response = await axios.get(API_URL);
+            console.log("API Response:", response.data);
             setReservations(response.data);
         } catch (error) {
             console.error("Error fetching reservations:", error);
         }
     };
-
-    useEffect(() => {
-        fetchReservations();
-        const interval = setInterval(() => {
-          fetchReservations(); // Ping to fetch reservations periodically
-        }, 60000); // Ping every 60 seconds
-
-        return () => clearInterval(interval); // Clean up on unmount
-      }, []);
 
 
     const filterReservations = () => {
