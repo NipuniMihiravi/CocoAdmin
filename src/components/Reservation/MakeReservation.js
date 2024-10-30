@@ -200,23 +200,25 @@ const MakeReservation = () => {
         {isFullDayBooked ? (
           <p>The full day is booked for this date. Please choose another day.</p>
         ) : (
-          <div>
-            <label>Time Slot:</label>
-            <select
-              name="timeSlot"
-              value={formData.timeSlot}
-              onChange={handleInputChange}
-              required
-            >
-              <option value="">Select a Time Slot</option>
-              {availableTimeSlots.map((slot) => (
-                <option key={slot} value={slot}>
-                  {slot}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
+          <label>Time Slot:</label>
+                      <select
+                        name="timeSlot"
+                        value={formData.timeSlot}
+                        onChange={handleInputChange}
+                        required
+                      >
+                        <option value="">Select a Time Slot</option>
+                        <option value="Day Time">Day Time</option>
+                        <option value="Night Time">Night Time</option>
+                        <option value="Full Time">Full Time</option>
+                        {availableTimeSlots.map((slot) => (
+                          <option key={slot} value={slot}>
+                            {slot}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                  )}
         <div>
           <label>Event:</label>
           <select
