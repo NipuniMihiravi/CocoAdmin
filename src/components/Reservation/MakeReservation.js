@@ -23,6 +23,9 @@ const MakeReservation = () => {
   const [isFullDayBooked, setIsFullDayBooked] = useState(false);
   const [reservationDate, setReservationDate] = useState(new Date());
   const [dateColors, setDateColors] = useState({});
+    const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
+    const [errorDialogOpen, setErrorDialogOpen] = useState(false);
+    const [errorMessage, setErrorMessage] = useState("");
   const API_URL = 'https://cocoback-6.onrender.com/api/reservation';
 
   useEffect(() => {
@@ -80,32 +83,41 @@ const MakeReservation = () => {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(API_URL, formData);
-      if (response.status === 200) {
-        alert("Reservation submitted successfully!");
-        setFormData({
-          fullName: "",
-          email: "",
-          contactNo: "",
-          timeSlot: "",
-          reservationDate: "",
-          event: "",
-          numberOfPack: "",
-          specificNote: ""
-        });
-        fetchReservations();
+   const handleSubmit = async (e) => {
+      e.preventDefault();
+
+      // Simple form validation
+      if (!formData.fullName || !formData.email || !formData.contactNo || !formData.timeSlot || !formData.reservationDate) {
+        setErrorMessage("Please fill in all required fields.");
+        setErrorDialogOpen(true);
+        return;
       }
-    } catch (error) {
-      if (error.response && error.response.status === 400) {
-        alert("This time slot is already booked. Please choose a different time or date.");
-      } else {
-        console.error("Error submitting reservation", error);
+
+      try {
+        const response = await axios.post(API_URL, formData);
+        if (response.status === 200) {
+          setConfirmationDialogOpen(true); // Show success dialog
+          setFormData({
+            fullName: "",
+            email: "",
+            contactNo: "",
+            timeSlot: "",
+            reservationDate: "",
+            event: "",
+            numberOfPack: "",
+            specificNote: ""
+          });
+          fetchReservations();
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 400) {
+          setErrorMessage("This time slot is already booked. Please choose a different time or date.");
+        } else {
+          setErrorMessage("An error occurred while submitting the reservation.");
+        }
+        setErrorDialogOpen(true);
       }
-    }
-  };
+    };
 
   const fetchReservations = async () => {
     try {

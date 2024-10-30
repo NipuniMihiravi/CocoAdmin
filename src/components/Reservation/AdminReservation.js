@@ -75,9 +75,10 @@ const handleEdit = async (updatedReservation) => {
 
     if (confirmEdit) {
         try {
-            await axios.put(`${API_URL}/${updatedReservation.id}`, updatedReservation); // Adjust the API endpoint
-            fetchReservations(); // Refresh the reservation list
+            await axios.put(`${API_URL}/${updatedReservation.id}`, updatedReservation);
+            fetchReservations();
             closeModal();
+            window.location.reload(); // Full page reload
         } catch (error) {
             console.error("Error updating reservation:", error);
         }
@@ -258,18 +259,7 @@ const handleDelete = async (id) => {
                                           onChange={(e) => setSelectedReservation({ ...selectedReservation, contactNo: e.target.value })}
                                       />
                                   </div>
-                                  <div className="form-row">
-                                          <label>Time Slot:</label>
-                                          <select
-                                              value={selectedReservation?.timeSlot || ''}
-                                              onChange={(e) => setSelectedReservation({ ...selectedReservation, timeSlot: e.target.value })}
-                                          >
-                                              <option value="">Select Time Slot</option>
-                                              <option value="day">Day Time</option>
-                                              <option value="night">Evening Time</option> {/* Corrected the closing tag here */}
-                                              <option value="full">Full Day</option>
-                                          </select>
-                                      </div>
+
 
                                   <div className="form-row">
                                       <label>Number of Packs:</label>
