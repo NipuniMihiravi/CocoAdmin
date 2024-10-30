@@ -144,14 +144,14 @@ const MakeReservation = () => {
     return '';
   };
 
-  return (
+ return (
     <div className="full-calendar-container">
       <h2>Event Calendar</h2>
       <div className="booking-status-container">
-        <div className="status-box full-booked"><span>Full Booked</span></div>
-        <div className="status-box day-booked"><span>Day Booked</span></div>
-        <div className="status-box night-booked"><span>Night Booked</span></div>
-      </div>
+              <div className="status-box full-booked"><span>Full Booked</span></div>
+              <div className="status-box day-booked"><span>Day Booked</span></div>
+              <div className="status-box night-booked"><span>Night Booked</span></div>
+            </div>
       <div className="calendar-container">
         <Calendar tileClassName={tileClassName} />
       </div>
@@ -193,32 +193,38 @@ const MakeReservation = () => {
             type="date"
             name="reservationDate"
             value={formData.reservationDate}
-            onChange={handleInputChange}
+            onChange={(e) => {
+              handleInputChange(e);
+              setReservationDate(e.target.value);
+            }}
             required
           />
         </div>
+
         {isFullDayBooked ? (
           <p>The full day is booked for this date. Please choose another day.</p>
         ) : (
-          <label>Time Slot:</label>
-                      <select
-                        name="timeSlot"
-                        value={formData.timeSlot}
-                        onChange={handleInputChange}
-                        required
-                      >
-                        <option value="">Select a Time Slot</option>
-                        <option value="Day Time">Day Time</option>
-                        <option value="Night Time">Night Time</option>
-                        <option value="Full Time">Full Time</option>
-                        {availableTimeSlots.map((slot) => (
-                          <option key={slot} value={slot}>
-                            {slot}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                  )}
+          <div>
+            <label>Time Slot:</label>
+            <select
+              name="timeSlot"
+              value={formData.timeSlot}
+              onChange={handleInputChange}
+              required
+            >
+              <option value="">Select a Time Slot</option>
+              <option value="Day Time">Day Time</option>
+              <option value="Night Time">Night Time</option>
+              <option value="Full Time">Full Time</option>
+              {availableTimeSlots.map((slot) => (
+                <option key={slot} value={slot}>
+                  {slot}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
         <div>
           <label>Event:</label>
           <select
@@ -233,16 +239,17 @@ const MakeReservation = () => {
             <option value="Special Event">Special Event</option>
           </select>
         </div>
-        <div>
-          <label>No Of Packs:</label>
-          <input
-            type="number"
-            name="numberOfPack"
-            value={formData.numberOfPack}
-            onChange={handleInputChange}
-            required
-          />
-        </div>
+
+       <div>
+           <label>No Of Packs:</label>
+           <input
+               type="number" // Change this to 'number' to allow only numeric input
+               name="numberOfPack" // Use a consistent name
+               value={formData.numberOfPack}
+               onChange={handleInputChange}
+               required
+           />
+       </div>
         <div>
           <label>Specific Note:</label>
           <textarea
