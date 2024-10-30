@@ -13,13 +13,24 @@ const GalleryForm = () => {
     const [items, setItems] = useState([]);
     const [newGalleryCategory, setNewGalleryCategory] = useState('');
     const [imagePreview, setImagePreview] = useState('');
-    const API_URL = process.env.REACT_APP_API_URL; // Fetch the API URL from environment variable
+    const API_URL = 'https://cocoback-6.onrender.com/api/gallery';
+
+    // Ping API to keep the server awake
+    useEffect(() => {
+        const intervalId = setInterval(() => {
+            axios.get(API_URL)
+                .then(() => console.log('Ping successful'))
+                .catch(error => console.error('Ping failed:', error));
+        }, 300000); // Ping every 5 minutes
+
+        return () => clearInterval(intervalId); // Cleanup interval on component unmount
+    }, []);
 
     // Fetch all galleries
     useEffect(() => {
         const fetchGalleries = async () => {
             try {
-                const response = await axios.get(`${API_URL}/api/gallery`); // Corrected backtick
+                const response = await axios.get(`${API_URL}`);
                 setGalleries(response.data);
             } catch (error) {
                 console.error('Error fetching galleries', error);
@@ -34,7 +45,7 @@ const GalleryForm = () => {
         if (selectedGalleryId) {
             const fetchItems = async () => {
                 try {
-                    const response = await axios.get(`${API_URL}/api/gallery/${selectedGalleryId}`);
+                    const response = await axios.get(`${API_URL}/${selectedGalleryId}`);
                     setItems(response.data.images || []);
                 } catch (error) {
                     console.error('Error fetching items', error);
@@ -49,7 +60,7 @@ const GalleryForm = () => {
     const handleAddGallery = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post(`${API_URL}/api/gallery`, {
+            const response = await axios.post(`${API_URL}`, {
                 name: galleryName,
                 category: newGalleryCategory,
                 images: []
@@ -58,7 +69,7 @@ const GalleryForm = () => {
                 alert('Gallery added successfully');
                 setGalleryName('');
                 setNewGalleryCategory('');
-                const updatedResponse = await axios.get(`${API_URL}/api/gallery`);
+                const updatedResponse = await axios.get(`${API_URL}`);
                 setGalleries(updatedResponse.data);
             }
         } catch (error) {
@@ -84,12 +95,12 @@ const GalleryForm = () => {
                 });
             }));
 
-            const response = await axios.post(`${API_URL}/api/gallery/${selectedGalleryId}/items`, items);
+            const response = await axios.post(`${API_URL}/${selectedGalleryId}/items`, items);
             if (response.status === 200) {
                 alert('Items added to gallery successfully');
                 setImageFiles([]);
                 setImagePreview('');
-                const updatedResponse = await axios.get(`${API_URL}/api/gallery/${selectedGalleryId}`);
+                const updatedResponse = await axios.get(`${API_URL}/${selectedGalleryId}`);
                 setItems(updatedResponse.data.images || []);
             }
         } catch (error) {
@@ -101,10 +112,10 @@ const GalleryForm = () => {
     // Handle deleting an item from a gallery
     const handleDeleteItem = async (itemId) => {
         try {
-            const response = await axios.delete(`${API_URL}/api/gallery/${selectedGalleryId}/items/${itemId}`);
+            const response = await axios.delete(`${API_URL}/${selectedGalleryId}/items/${itemId}`);
             if (response.status === 200) {
                 alert('Item deleted successfully');
-                const updatedResponse = await axios.get(`${API_URL}/api/gallery/${selectedGalleryId}`);
+                const updatedResponse = await axios.get(`${API_URL}/${selectedGalleryId}`);
                 setItems(updatedResponse.data.images || []);
             }
         } catch (error) {
@@ -134,36 +145,7 @@ const GalleryForm = () => {
             <h2>Gallery Management</h2>
 
             {/* Add Gallery Form */}
-            <div className="form-section">
-                <h3>Add New Gallery</h3>
-                <form onSubmit={handleAddGallery} className="gallery-form">
-                    <div className="form-group">
-                        <label htmlFor="galleryName">Gallery Name:</label>
-                        <input
-                            id="galleryName"
-                            type="text"
-                            value={galleryName}
-                            onChange={(e) => setGalleryName(e.target.value)}
-                            required
-                            className="form-control"
-                        />
-                    </div>
 
-                    <div className="form-group">
-                        <label htmlFor="galleryCategory">Gallery Category:</label>
-                        <input
-                            id="galleryCategory"
-                            type="text"
-                            value={newGalleryCategory}
-                            onChange={(e) => setNewGalleryCategory(e.target.value)}
-                            required
-                            className="form-control"
-                        />
-                    </div>
-
-                    <button type="submit" className="btn btn-primary">Add Gallery</button>
-                </form>
-            </div>
 
             {/* Add Items to Gallery Form */}
             <div className="form-section">

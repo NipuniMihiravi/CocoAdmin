@@ -11,15 +11,23 @@ const FacilityList = () => {
     const [editFacility, setEditFacility] = useState(null);
     const [isAddModalOpen, setIsAddModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const API_URL = process.env.REACT_APP_API_URL; // Fetch the API URL from environment variable
+    const API_URL = 'https://cocoback-6.onrender.com/api/facility';
 
     useEffect(() => {
         fetchFacilities();
+
+        const intervalId = setInterval(() => {
+            axios.get(API_URL)
+                .then(() => console.log('Ping successful'))
+                .catch(error => console.error('Ping failed:', error));
+        }, 300000); // Ping every 5 minutes
+
+        return () => clearInterval(intervalId); // Cleanup interval on component unmount
     }, []);
 
     const fetchFacilities = async () => {
         try {
-            const response = await axios.get(`${API_URL}/api/facility`); // Using the API_URL
+            const response = await axios.get(API_URL); // API_URL is sufficient
             console.log('Fetched facilities:', response.data); // Log the response data
             setFacilities(response.data);
         } catch (error) {
@@ -30,7 +38,7 @@ const FacilityList = () => {
     const handleAddFacility = async () => {
         if (newFacility.heading && newFacility.description && newFacility.image) {
             try {
-                const response = await axios.post(`${API_URL}/api/facility`, newFacility); // Using the API_URL
+                const response = await axios.post(API_URL, newFacility);
                 setFacilities([...facilities, response.data]);
                 setNewFacility({ heading: '', description: '', image: '' });
                 setIsAddModalOpen(false);
@@ -47,7 +55,7 @@ const FacilityList = () => {
         const confirmDelete = window.confirm("Are you sure you want to delete this facility?");
         if (confirmDelete) {
             try {
-                await axios.delete(`${API_URL}/api/facility/${id}`); // Using the API_URL
+                await axios.delete(`${API_URL}/${id}`);
                 setFacilities(facilities.filter(facility => facility.id !== id));
                 alert('Facility deleted successfully!');
             } catch (error) {
@@ -65,7 +73,7 @@ const FacilityList = () => {
     const handleUpdateFacility = async () => {
         if (editFacility.heading && editFacility.description && editFacility.image) {
             try {
-                const response = await axios.put(`${API_URL}/api/facility/${editFacility.id}`, editFacility); // Using the API_URL
+                const response = await axios.put(`${API_URL}/${editFacility.id}`, editFacility);
                 setFacilities(facilities.map(facility =>
                     facility.id === editFacility.id ? response.data : facility
                 ));
@@ -95,7 +103,7 @@ const FacilityList = () => {
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setNewFacility({ ...newFacility, image: reader.result.split(',')[1] }); // Store base64 string
+                setNewFacility({ ...newFacility, image: reader.result.split(',')[1] });
             };
             reader.readAsDataURL(file);
         }
@@ -106,7 +114,7 @@ const FacilityList = () => {
         if (file) {
             const reader = new FileReader();
             reader.onloadend = () => {
-                setEditFacility({ ...editFacility, image: reader.result.split(',')[1] }); // Store base64 string
+                setEditFacility({ ...editFacility, image: reader.result.split(',')[1] });
             };
             reader.readAsDataURL(file);
         }

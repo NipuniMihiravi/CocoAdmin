@@ -9,16 +9,23 @@ const ContactList = () => {
     const [contacts, setContacts] = useState([]);
     const [editContact, setEditContact] = useState(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const API_URL = process.env.REACT_APP_API_URL; // Fetch the API URL from environment variable
+    const API_URL = 'https://cocoback-6.onrender.com/api/contact';
 
     useEffect(() => {
         fetchContacts();
-    }, []);
 
+        const intervalId = setInterval(() => {
+            axios.get(API_URL)
+                .then(() => console.log('Ping successful'))
+                .catch(error => console.error('Ping failed:', error));
+        }, 300000); // Ping every 5 minutes
+
+        return () => clearInterval(intervalId); // Cleanup interval on component unmount
+    }, []);
 
     const fetchContacts = async () => {
         try {
-            const response = await axios.get(`${API_URL}/api/contact`);
+            const response = await axios.get(API_URL);
             console.log(response.data); // Log the response to check its structure
             const sortedContacts = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             setContacts(sortedContacts);
@@ -27,12 +34,11 @@ const ContactList = () => {
         }
     };
 
-
     const handleDelete = async (id) => {
         const confirmDelete = window.confirm("Are you sure you want to delete this contact?");
         if (confirmDelete) {
             try {
-                await axios.delete(`${API_URL}/api/contact/${id}`);
+                await axios.delete(`${API_URL}/${id}`);
                 setContacts(contacts.filter(contact => contact.id !== id));
                 alert('Contact deleted successfully!');
             } catch (error) {
@@ -50,7 +56,7 @@ const ContactList = () => {
     const handleUpdateContact = async () => {
         if (editContact.replyNote && editContact.status) {
             try {
-                const response = await axios.put(`${API_URL}/api/contact/${editContact.id}`, editContact);
+                const response = await axios.put(`${API_URL}/${editContact.id}`, editContact);
                 setContacts(contacts.map(contact =>
                     contact.id === editContact.id ? response.data : contact
                 ));
