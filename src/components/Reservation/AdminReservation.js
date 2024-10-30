@@ -154,6 +154,15 @@ const handleDelete = async (id) => {
         <div className="date-calender-container">
             <h2>Reservation Management</h2>
 
+            {/* Refresh Button */}
+                  <button
+                      className="refresh-button"
+                      onClick={() => window.location.reload()}
+                      style={{ position: 'absolute', top: 10, right: 10 }}
+                  >
+                      Refresh Page
+                  </button>
+
             {/* Date Range Selection */}
             <div className="date-range">
                 <DatePicker

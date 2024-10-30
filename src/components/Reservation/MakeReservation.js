@@ -83,41 +83,37 @@ const MakeReservation = () => {
     }
   };
 
-   const handleSubmit = async (e) => {
-      e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
 
-      // Simple form validation
-      if (!formData.fullName || !formData.email || !formData.contactNo || !formData.timeSlot || !formData.reservationDate) {
-        setErrorMessage("Please fill in all required fields.");
-        setErrorDialogOpen(true);
-        return;
-      }
+    // Confirmation prompt
+    const isConfirmed = window.confirm("Are you sure you want to submit this reservation?");
+    if (!isConfirmed) return; // Cancel submission if not confirmed
 
-      try {
-        const response = await axios.post(API_URL, formData);
-        if (response.status === 200) {
-          setConfirmationDialogOpen(true); // Show success dialog
-          setFormData({
-            fullName: "",
-            email: "",
-            contactNo: "",
-            timeSlot: "",
-            reservationDate: "",
-            event: "",
-            numberOfPack: "",
-            specificNote: ""
-          });
-          fetchReservations();
-        }
-      } catch (error) {
-        if (error.response && error.response.status === 400) {
-          setErrorMessage("This time slot is already booked. Please choose a different time or date.");
-        } else {
-          setErrorMessage("An error occurred while submitting the reservation.");
-        }
-        setErrorDialogOpen(true);
+    try {
+      const response = await axios.post(API_URL, formData);
+      if (response.status === 200) {
+        alert("Reservation submitted successfully!");
+        setFormData({
+          fullName: "",
+          email: "",
+          contactNo: "",
+          timeSlot: "",
+          reservationDate: "",
+          event: "",
+          numberOfPack: "",
+          specificNote: ""
+        });
+        fetchReservations();
       }
-    };
+    } catch (error) {
+      if (error.response && error.response.status === 400) {
+        alert("This time slot is already booked. Please choose a different time or date.");
+      } else {
+        console.error("Error submitting reservation", error);
+      }
+    }
+  };
 
   const fetchReservations = async () => {
     try {
