@@ -3,7 +3,7 @@ import axios from 'axios';
 import Modal from 'react-modal';
 import './Dash.css';
 
-Modal.setAppElement('#root'); // Set the app root element for accessibility
+Modal.setAppElement('#root'); // Accessibility setup
 
 const ContactList = () => {
     const [contacts, setContacts] = useState([]);
@@ -20,35 +20,35 @@ const ContactList = () => {
                 .catch(error => console.error('Ping failed:', error));
         }, 300000); // Ping every 5 minutes
 
-        return () => clearInterval(intervalId); // Cleanup interval on component unmount
+        return () => clearInterval(intervalId);
     }, []);
 
     const fetchContacts = async () => {
         try {
             const response = await axios.get(API_URL);
-            console.log(response.data); // Log the response to check its structure
+            console.log('Fetched Data:', response.data); // Log response data
             const sortedContacts = response.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
             setContacts(sortedContacts);
         } catch (error) {
-            console.error('Error fetching contacts:', error);
+            console.error('Error fetching contacts:', error.message);
         }
     };
 
-    const handleDelete = async (id) => {
+    const handleDelete = async (_id) => {
         const confirmDelete = window.confirm("Are you sure you want to delete this contact?");
         if (confirmDelete) {
             try {
-                await axios.delete(`${API_URL}/${id}`);
-                setContacts(contacts.filter(contact => contact.id !== id));
+                await axios.delete(`${API_URL}/${_id}`);
+                setContacts(contacts.filter(contact => contact._id !== _id));
                 alert('Contact deleted successfully!');
             } catch (error) {
-                console.error('Error deleting contact:', error);
+                console.error('Error deleting contact:', error.message);
             }
         }
     };
 
-    const handleEdit = (id) => {
-        const contactToEdit = contacts.find(contact => contact.id === id);
+    const handleEdit = (_id) => {
+        const contactToEdit = contacts.find(contact => contact._id === _id);
         setEditContact(contactToEdit);
         setIsEditModalOpen(true);
     };
@@ -56,15 +56,17 @@ const ContactList = () => {
     const handleUpdateContact = async () => {
         if (editContact.replyNote && editContact.status) {
             try {
-                const response = await axios.put(`${API_URL}/${editContact.id}`, editContact);
-                setContacts(contacts.map(contact =>
-                    contact.id === editContact.id ? response.data : contact
-                ));
-                setEditContact(null);
-                setIsEditModalOpen(false);
-                alert('Contact updated successfully!');
+                const response = await axios.put(`${API_URL}/${editContact._id}`, editContact);
+                if (response.status === 200) {
+                    setContacts(contacts.map(contact =>
+                        contact._id === editContact._id ? response.data : contact
+                    ));
+                    setEditContact(null);
+                    setIsEditModalOpen(false);
+                    alert('Contact updated successfully!');
+                }
             } catch (error) {
-                console.error('Error updating contact:', error);
+                console.error('Error updating contact:', error.message);
             }
         } else {
             alert('Please fill out all fields.');
@@ -96,7 +98,7 @@ const ContactList = () => {
                 </thead>
                 <tbody>
                     {contacts.map((contact) => (
-                        <tr key={contact.id}>
+                        <tr key={contact._id}>
                             <td>{contact.name}</td>
                             <td>{contact.email}</td>
                             <td>{contact.functionDate}</td>
@@ -106,8 +108,8 @@ const ContactList = () => {
                             <td>{contact.replyNote}</td>
                             <td>{contact.status}</td>
                             <td>
-                                <button onClick={() => handleEdit(contact.id)} className="btn-edit-item">Edit</button>
-                                <button onClick={() => handleDelete(contact.id)} className="btn-delete-item">Delete</button>
+                                <button onClick={() => handleEdit(contact._id)} className="btn-edit-item">Edit</button>
+                                <button onClick={() => handleDelete(contact._id)} className="btn-delete-item">Delete</button>
                             </td>
                         </tr>
                     ))}
@@ -127,12 +129,12 @@ const ContactList = () => {
                     <textarea
                         name="replyNote"
                         placeholder="Reply Note"
-                        value={editContact.replyNote}
+                        value={editContact.replyNote || ""}
                         onChange={handleEditInputChange}
                     />
                     <select
                         name="status"
-                        value={editContact.status}
+                        value={editContact.status || "Pending"}
                         onChange={handleEditInputChange}
                     >
                         <option value="Pending">Pending</option>
