@@ -9,7 +9,7 @@ const ContactList = () => {
     const [contacts, setContacts] = useState([]);
     const [editContact, setEditContact] = useState(null);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-    const API_URL = 'https://cocoback-6.onrender.com/api/contact';
+    const API_URL = 'https://cocoback-6.onrender.com/contact';
 
     useEffect(() => {
         fetchContacts();
