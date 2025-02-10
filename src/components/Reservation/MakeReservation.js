@@ -26,7 +26,7 @@ const MakeReservation = () => {
     const [confirmationDialogOpen, setConfirmationDialogOpen] = useState(false);
     const [errorDialogOpen, setErrorDialogOpen] = useState(false);
     const [errorMessage, setErrorMessage] = useState("");
-  const API_URL = 'https://cocoback-6.onrender.com/api/reservation';
+  const API_URL = 'https://cocobackendrender.onrender.com/api/reservation';
 
   useEffect(() => {
     fetchReservations();
