@@ -24,7 +24,7 @@ const CalendarView = () => {
   const [dateColors, setDateColors] = useState({});
   const [reservations, setReservations] = useState([]);
   const [filteredReservations, setFilteredReservations] = useState([]);
-  const API_URL = 'https://cocobackendrender.onrender.com/api/reservation';
+  const API_URL = 'https://cocobackendrender.onrender.com/reservation';
 
   // Fetch reservations and map them to colors
   useEffect(() => {
