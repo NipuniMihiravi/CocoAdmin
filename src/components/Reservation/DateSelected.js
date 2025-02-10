@@ -12,7 +12,7 @@ const DateSelected = () => {
   const [reservations, setReservations] = useState([]);
   const [errorMessage, setErrorMessage] = useState("");
   const [bookedDates, setBookedDates] = useState(new Set()); // To track booked dates
-  const API_URL = 'https://cocoback-6.onrender.com/api/reservation';
+  const API_URL = 'https://cocobackendrender.onrender.com/reservation';
 
   // Function to handle date selection
   const handleDateChange = (date) => {

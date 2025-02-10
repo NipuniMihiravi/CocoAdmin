@@ -18,7 +18,7 @@ const AdminReservation = () => {
     const [endDate, setEndDate] = useState(null); // End date for filtering
     const [searchTerm, setSearchTerm] = useState(""); // Search term
     const [isDateRangeSelected, setIsDateRangeSelected] = useState(false); // Track if date range is selected
-    const API_URL = 'https://cocoback-6.onrender.com/api/reservation';
+    const API_URL = 'https://cocobackendrender.onrender.com/reservation';
 
 
     useEffect(() => {
