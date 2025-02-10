@@ -78,7 +78,7 @@ const ContactList = () => {
 
     return (
         <div className="table-container">
-            <h1>Manage Contacts</h1>
+            <h1>Reservations</h1>
 
             <table>
                 <thead>
