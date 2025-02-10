@@ -41,7 +41,7 @@
       "last 1 safari version"
     ]
   },
-  "proxy": "http://localhost:8081",
+  "proxy": "https://cocobackendrender.onrender.com",
   "devDependencies": {
     "react-modal": "^3.16.1"
   }
